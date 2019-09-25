@@ -1,8 +1,10 @@
-package com.getinch.calendarwrapper;
+package xds.rq2.integrationtest1.Calendar;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +17,8 @@ import java.util.TimeZone;
 
 /**
  * Created by andraskindler on 13/12/13.
+ * Permissions code added by xuan li 9/25/2019
+ * Change attendees to events 9/25/2019 in contentResolver.query
  */
 public class Event {
 
@@ -110,7 +114,10 @@ public class Event {
         calendarId = calendar.id;
     }
 
-    public static List<Event> getEventsForQuery(final String query, final String[] queryArgs, final String sortOrder, final ContentResolver contentResolver) {
+    public static List<Event> getEventsForQuery(final String query, final String[] queryArgs,
+                                                final String sortOrder,
+                                                final ContentResolver contentResolver) {
+
         final String[] eventProjection = new String[]{
             CalendarContract.Events._ID,
             CalendarContract.Events.CALENDAR_ID,
@@ -152,7 +159,18 @@ public class Event {
             tempList.add(CalendarContract.Events.UID_2445);
         }
 
-        final Cursor cursor = contentResolver.query(CalendarContract.Attendees.CONTENT_URI, tempList.toArray(new String[tempList.size()]), query, queryArgs, sortOrder);
+        if (checkSelfPermission(Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+        }
+
+        final Cursor cursor = contentResolver.query(CalendarContract.Events.CONTENT_URI,
+                tempList.toArray(new String[tempList.size()]), query, queryArgs, sortOrder);
 
         final List<Event> result = new ArrayList<Event>();
 
@@ -205,6 +223,18 @@ public class Event {
     }
 
     public int create(final ContentResolver contentResolver) {
+
+        if (checkSelfPermission(Manifest.permission.READ_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+        }
+
         final ContentValues contentValues = mapToContentValues();
         final Uri uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, contentValues);
         return id = Integer.parseInt(uri.getLastPathSegment());
@@ -216,4 +246,9 @@ public class Event {
         contentResolver.update(ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id), contentValues, null, null);
         return id;
     }
+
+    private static int checkSelfPermission(String readCalendar) {
+        return 0;
+    }
+
 }
