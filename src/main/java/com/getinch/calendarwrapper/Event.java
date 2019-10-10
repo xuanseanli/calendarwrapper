@@ -173,47 +173,51 @@ public class Event {
                 tempList.toArray(new String[tempList.size()]), query, queryArgs, sortOrder);
 
         final List<Event> result = new ArrayList<Event>();
+        
+        //cursor.moveToFirst();
+        if (cursor.moveToFirst()) {
 
-        cursor.moveToFirst();
-        final Event event1 = new Event();
-        event1.id = cursor.getInt(0);
-        event1.calendarId = cursor.getInt(1);
-        event1.organizer = cursor.getString(2);
-        event1.title = cursor.getString(3);
-        event1.location = cursor.getString(4);
-        event1.description = cursor.getString(5);
-        event1.color = cursor.getInt(6);
-        event1.startDate = cursor.getString(7);
-        event1.endDate = cursor.getString(8);
-        event1.timezone = cursor.getString(9);
-        event1.endTimezone = cursor.getString(10);
-        event1.duration = cursor.getString(11);
-        event1.allDay = cursor.getInt(12);
-        event1.recurrenceRule = cursor.getString(13);
-        event1.recurrenceDate = cursor.getString(14);
-        event1.exceptionRule = cursor.getString(15);
-        event1.exceptionDate = cursor.getString(16);
-        event1.originalId = cursor.getString(17);
-        event1.originalSyncId = cursor.getString(18);
-        event1.originalInstanceTime = cursor.getInt(19);
-        event1.originalAllDay = cursor.getInt(20);
-        event1.accessLevel = cursor.getInt(21);
-        event1.availability = cursor.getInt(22);
-        event1.guestsCanModify = cursor.getInt(23);
-        event1.guestsCanInviteOthers = cursor.getInt(24);
-        event1.guestsCanSeeGuests = cursor.getInt(25);
-        event1.selfAttendeeStatus = cursor.getString(26);
-        event1.hasAlarm = cursor.getInt(27);
-        event1.hasAttendeeData = cursor.getInt(28);
-        event1.hasExtendedProperties = cursor.getInt(29);
-        event1.eventTimezone = cursor.getString(30);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            event1.customAppPackage = cursor.getString(31);
-            event1.customAppUri = cursor.getString(32);
-            event1.uID2445 = cursor.getString(33);
+            final Event event1 = new Event();
+            event1.id = cursor.getInt(0);
+            event1.calendarId = cursor.getInt(1);
+            event1.organizer = cursor.getString(2);
+            event1.title = cursor.getString(3);
+            event1.location = cursor.getString(4);
+            event1.description = cursor.getString(5);
+            event1.color = cursor.getInt(6);
+            event1.startDate = cursor.getString(7);
+            event1.endDate = cursor.getString(8);
+            event1.timezone = cursor.getString(9);
+            event1.endTimezone = cursor.getString(10);
+            event1.duration = cursor.getString(11);
+            event1.allDay = cursor.getInt(12);
+            event1.recurrenceRule = cursor.getString(13);
+            event1.recurrenceDate = cursor.getString(14);
+            event1.exceptionRule = cursor.getString(15);
+            event1.exceptionDate = cursor.getString(16);
+            event1.originalId = cursor.getString(17);
+            event1.originalSyncId = cursor.getString(18);
+            event1.originalInstanceTime = cursor.getInt(19);
+            event1.originalAllDay = cursor.getInt(20);
+            event1.accessLevel = cursor.getInt(21);
+            event1.availability = cursor.getInt(22);
+            event1.guestsCanModify = cursor.getInt(23);
+            event1.guestsCanInviteOthers = cursor.getInt(24);
+            event1.guestsCanSeeGuests = cursor.getInt(25);
+            event1.selfAttendeeStatus = cursor.getString(26);
+            event1.hasAlarm = cursor.getInt(27);
+            event1.hasAttendeeData = cursor.getInt(28);
+            event1.hasExtendedProperties = cursor.getInt(29);
+            event1.eventTimezone = cursor.getString(30);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                event1.customAppPackage = cursor.getString(31);
+                event1.customAppUri = cursor.getString(32);
+                event1.uID2445 = cursor.getString(33);
+            }
+            if (event1.title != null) {
+                result.add(event1);
+            }
         }
-        result.add(event1);
-
 
         while (cursor.moveToNext()) {
             final Event event = new Event();
@@ -253,7 +257,11 @@ public class Event {
                 event.customAppUri = cursor.getString(32);
                 event.uID2445 = cursor.getString(33);
             }
-            result.add(event);
+            if (event.title != null) {
+                result.add(event);
+            }
+
+            //result.add(event);
         }
 
         cursor.close();
